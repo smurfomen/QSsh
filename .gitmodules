@@ -1,0 +1,6 @@
+[submodule "libssh"]
+	path = libssh
+	url = https://git.libssh.org/projects/libssh.git
+[submodule "QOption"]
+	path = QOption
+	url = https://github.com/smurfomen/QOption.git
