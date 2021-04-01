@@ -16,61 +16,46 @@ void QSshPush::handle()
     if (scpSession == NULL)
         error(this);
 
+    else {
 
-    // attempt to initialize new scp session.
-    int scpInitialized = ssh_scp_init(scpSession);
+        // attempt to initialize new scp session.
+        int scpInitialized = ssh_scp_init(scpSession);
 
+        // if failed, close scp session and return.
+        if(scpInitialized != SSH_OK)
+            error(this);
 
-    // if failed, close scp session and return.
-    if( scpInitialized != SSH_OK )
-    {
+        else {
+            // open the local file and check to make sure it exists
+            // if not, close scp session and return.
+            QFile file(localPath);
+
+            // if the file does exist, read all contents as bytes
+            if(!file.open(QIODevice::ReadOnly))
+                error(this);
+
+            else
+            {
+                QByteArray buffer = file.readAll();
+                file.close();
+
+                // attempt to authorize pushing bytes over scp socket
+                // if this fails, close scp session and return.
+                if (ssh_scp_push_file(scpSession, remotePath.toStdString().c_str(), buffer.size(), S_IRUSR | S_IWUSR) != SSH_OK)
+                    error(this);
+
+                // once authorized to push bytes over scp socket, start writing
+                // if an error is returned,  close scp session and return.
+                else if ( ssh_scp_write(scpSession, buffer.data(), buffer.size() ) == SSH_OK)
+                    success(this);
+
+                else
+                    error(this);
+            }
+        }
+
+        // close scp session and return.
         ssh_scp_close(scpSession);
         ssh_scp_free(scpSession);
-        error(this);
     }
-
-
-    // open the local file and check to make sure it exists
-    // if not, close scp session and return.
-    QFile file(localPath);
-    if ( !file.exists() )
-    {
-        ssh_scp_close(scpSession);
-        ssh_scp_free(scpSession);
-        error(this);
-        return;
-    }
-
-    // if the file does exist, read all contents as bytes
-    file.open(QIODevice::ReadOnly);
-    QByteArray buffer = file.readAll();
-    file.close();
-
-    // attempt to authorize pushing bytes over scp socket
-    // if this fails, close scp session and return.
-    if ( ssh_scp_push_file(scpSession, remotePath.toStdString().c_str(), buffer.size(), S_IRUSR | S_IWUSR) != SSH_OK)
-    {
-        ssh_scp_close(scpSession);
-        ssh_scp_free(scpSession);
-        error(this);
-        return;
-    }
-
-
-    // once authorized to push bytes over scp socket, start writing
-    // if an error is returned,  close scp session and return.
-    if ( ssh_scp_write(scpSession, buffer.data(), buffer.size() ) != SSH_OK)
-    {
-
-        ssh_scp_close(scpSession);
-        ssh_scp_free(scpSession);
-        error(this);
-        return;
-    }
-
-    // close scp session and return.
-    ssh_scp_close(scpSession);
-    ssh_scp_free(scpSession);
-
-    success(this);
 }
