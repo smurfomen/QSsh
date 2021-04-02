@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD/src
 
 HEADERS += \
+        $$PWD/src/qsftpfolder.h \
         $$PWD/src/qsshcommand.h \
         $$PWD/src/qsshconnection.h \
         $$PWD/src/qsshpull.h \
@@ -8,6 +9,7 @@ HEADERS += \
         $$PWD/src/qsshtask.h
 
 SOURCES += \
+        $$PWD/src/qsftpfolder.cpp \
         $$PWD/src/qsshcommand.cpp \
         $$PWD/src/qsshconnection.cpp \
         $$PWD/src/qsshpull.cpp \

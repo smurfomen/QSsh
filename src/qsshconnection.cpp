@@ -1,38 +1,5 @@
 #include "qsshconnection.h"
 
-QSshConnection::QSshConnection(ssh_session s, const QString& host, const QString& user, const QString& pass, QObject* parent)
-    : QObject(parent),
-      m_session(s),
-      m_host(host),
-      m_user(user),
-      m_pass(pass)
-{
-
-}
-
-QSshConnection::~QSshConnection()
-{
-    if (m_session != NULL) {
-        ssh_disconnect(m_session);
-        ssh_free(m_session);
-    }
-
-    m_session = NULL;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace qssh {
     QOption<QSshConnection*> connect(const QString& host, const QString& user, const QString& pass) {
         ssh_session session = ssh_new();
@@ -60,5 +27,31 @@ namespace qssh {
 
         return None();
     }
+}
+
+
+QSshConnection::QSshConnection(ssh_session s, const QString& host, const QString& user, const QString& pass, QObject* parent)
+    : QObject(parent),
+      m_session(s),
+      m_host(host),
+      m_user(user),
+      m_pass(pass)
+{
+
+}
+
+QSshConnection::~QSshConnection()
+{
+    if (m_session != NULL) {
+        ssh_disconnect(m_session);
+        ssh_free(m_session);
+    }
+
+    m_session = NULL;
+}
+
+QSftpFolder QSshConnection::folder(const QString& path) const
+{
+    return QSftpFolder(path, m_session);
 }
 

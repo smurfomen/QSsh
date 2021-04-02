@@ -48,7 +48,7 @@ void QSshPull::handle()
             else {
                 // open up local file and write contents of buffer to it.
                 QFile file(localPath);
-                if(file.open(QIODevice::WriteOnly))
+                if(file.open(QIODevice::WriteOnly | QIODevice::Truncate))
                 {
                     file.write(buffer);
                     file.close();

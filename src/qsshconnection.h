@@ -5,6 +5,7 @@
 #include <QObject>
 #include <qoption.h>
 #include <qsshtask.h>
+#include <qsftpfolder.h>
 #include <QQueue>
 
 class QSshConnection : public QObject
@@ -55,6 +56,8 @@ public:
         return m_pass;
     }
 
+    QSftpFolder folder(const QString & path) const;
+
 private:
     ssh_session m_session;
     QString m_host;
@@ -66,7 +69,7 @@ private:
 
 
 namespace qssh {
-    QOption<QSshConnection *> connect(const QString & host, const QString & user, const QString & pass);
+    QOption<QSshConnection *> connect(const QString & host, const QString & user, const QString & pass); 
 }
 
 

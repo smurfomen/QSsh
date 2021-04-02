@@ -9,16 +9,16 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     QSshConnection * ssh = qssh::connect("192.168.0.108", "pcuser", "pcuser").expect("SSH connection doesn't established");
+//    auto f = ssh->folder("/home/pcuser/tobuild/kitconfig");
 
-    QSshCommand * command = ssh->push<QSshCommand>("cat /home/pcuser/tobuild/kp_nix/main.cpp");
+//    f.download("/home/pcuser/testdir", QSftpFolder::File | QSftpFolder::Dir);
 
-    QObject::connect(command, &QSshTask::success, [&](QSshTask * t){
-        QSshCommand * c = (QSshCommand*)t;
-        qDebug()<< "executed:" << c->command() << ": " << c->response();
-    });
 
-    ssh->run();
+    auto f1 = ssh->folder("/home/pcuser/tobuild/kitconfig_TEST1");
 
+    qDebug()<<f1.upload("/home/pcuser/testdir", QSftpFolder::File | QSftpFolder::Dir);
+
+    qDebug()<<"!!!END!!!";
 
     return a.exec();
 }
