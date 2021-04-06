@@ -7,7 +7,7 @@ class QSshCommand : public QSshTask {
     Q_OBJECT
 public:
     QSshCommand(const QString & m_cmd, ssh_session s);
-    void handle() override;
+    bool handle() override;
     QString command() const {
         return m_cmd;
     }

@@ -7,8 +7,9 @@ QSshPush::QSshPush(const QString& from_localPath, const QString& to_remotePath, 
 
 }
 
-void QSshPush::handle()
+bool QSshPush::handle()
 {
+    bool ok = false;
     // attempt to create new scp from ssh session.
     ssh_scp scpSession = ssh_scp_new(m_session, SSH_SCP_WRITE, remotePath.toStdString().c_str());
 
@@ -46,7 +47,7 @@ void QSshPush::handle()
 
                 // once authorized to push bytes over scp socket, start writing
                 // if an error is returned,  close scp session and return.
-                else if ( ssh_scp_write(scpSession, buffer.data(), buffer.size() ) == SSH_OK)
+                else if ( (ok = ssh_scp_write(scpSession, buffer.data(), buffer.size() ) == SSH_OK))
                     success(this);
 
                 else
@@ -58,4 +59,5 @@ void QSshPush::handle()
         ssh_scp_close(scpSession);
         ssh_scp_free(scpSession);
     }
+    return ok;
 }

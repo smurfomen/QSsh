@@ -9,7 +9,7 @@ class QSshTask : public QObject
 public:
     QSshTask();
 
-    virtual void handle() = 0;
+    virtual bool handle() = 0;
 
 Q_SIGNALS:
     void error(QSshTask *);

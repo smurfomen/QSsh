@@ -8,7 +8,7 @@ class QSshPush : public QSshTask
     Q_OBJECT
 public:
     QSshPush(const QString & from_localPath, const QString & to_remotePath, ssh_session s);
-    void handle() override;
+    bool handle() override;
     QString from() const {
         return localPath;
     };

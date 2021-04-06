@@ -5,8 +5,9 @@ QSshCommand::QSshCommand(const QString & cmd, ssh_session s)
 {
 }
 
-void QSshCommand::handle()
+bool QSshCommand::handle()
 {
+    bool ok = false;
     // attempt to open ssh shell channel
     ssh_channel channel = ssh_channel_new(m_session);
 
@@ -48,6 +49,7 @@ void QSshCommand::handle()
                 } while (newBytes > 0);
 
                 m_response = buffer;
+                ok = true;
                 success(this);
             }
 
@@ -58,4 +60,5 @@ void QSshCommand::handle()
         ssh_channel_close(channel);
         ssh_channel_free(channel);
     }
+    return ok;
 }

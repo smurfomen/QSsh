@@ -10,7 +10,7 @@ class QSshPull : public QSshTask
 public:
     QSshPull(const QString & from_remotePath, const QString & to_localPath, ssh_session s);
 
-    void handle() override;
+    bool handle() override;
 
     QString from() const {
         return remotePath;

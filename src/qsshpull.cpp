@@ -8,8 +8,9 @@ QSshPull::QSshPull(const QString& from_remotePath, const QString& to_localPath, 
 
 }
 
-void QSshPull::handle()
+bool QSshPull::handle()
 {
+    bool ok = false;
     ssh_scp scpSession = ssh_scp_new(m_session,SSH_SCP_READ, remotePath.toStdString().c_str());
 
     if (scpSession == NULL)
@@ -52,6 +53,7 @@ void QSshPull::handle()
                 {
                     file.write(buffer);
                     file.close();
+                    ok = true;
                     success(this);
                 }
                 else
@@ -62,4 +64,5 @@ void QSshPull::handle()
         ssh_scp_close(scpSession);
         ssh_scp_free(scpSession);
     }
+    return ok;
 }
